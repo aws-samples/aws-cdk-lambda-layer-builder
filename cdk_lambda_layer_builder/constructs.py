@@ -84,6 +84,7 @@ class BuildPyLayerAsset(Construct):
         command.extend(
             ['-t',f'/asset-output/python/lib/python{self.get_pyversion()}/site-packages/','--force-reinstall']
         )
+        command  = [' '.join(command)]
         self.s3_asset = aws_s3_assets.Asset(self, 's3asset', 
             path=asset_dir,
             bundling=BundlingOptions(
