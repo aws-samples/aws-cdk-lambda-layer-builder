@@ -1,21 +1,21 @@
  # cdk-lambda-layer-builder
 
 cdk-lambda-layer-builder is a collection of [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html#cpm) 
-constructs to build a Python Lambda Layers with minimum requirements on the user 
-side, e.g. no bash or zip cli has to be available on the user machine.
+constructs to build Python Lambda Layers with minimum requirements on the user 
+side, e.g. no bash or zip cli has to be available on the user's machine.
 
 Amazon Lambda functions often require extra modules which can be packaged in an 
 Amazon Lambda Layer. The Layer is then attached to the Lambda to make the packaged 
 module easily usable in the function code. AWS CDK does not have a simple, production 
-ready solution to create Lambda Layer. This package solve this issue by providing 
-a simple, yet powerful way to create Python Layers, where modules can come from PyPi 
+ready solution to create a Lambda Layer. This package solves this issue by providing 
+a simple, yet powerful way to create Python Layers, where modules can come from PyPI 
 or can be custom modules.
 
 ## Requirements
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) >= v2: installed and configured
 * [Python](https://www.python.org/) >= 3.6
 * [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html#cpm) >= 2.X
-* [docker](https://docs.docker.com/get-docker/)
+* [Docker](https://docs.docker.com/get-docker/)
 
 This construct works on Linux & MacOS and should work on Windows.
 
@@ -32,12 +32,12 @@ $ pip install .
 ```
 
 ## Usage
-Here is a full example for creating a Lambda layer with two modules available on 
-[pypi](https://pypi.org/). The modules are [numpy](https://pypi.org/project/numpy/) 
-and [requests](https://pypi.org/project/requests/). Simply call the CDK construct 
+Here is a full example for creating a Lambda Layer with two modules available on 
+[PyPI](https://pypi.org/). The modules are [NumPy](https://pypi.org/project/numpy/) 
+and [Requests](https://pypi.org/project/requests/). Simply call the CDK construct 
 `BuildPyLayerAsset` and use its member variables (`BuildPyLayerAsset.asset_bucket` 
 and `pypi_layer_asset.asset_key`) to create the Lambda Layer resource. The layer 
-assets are build and packaged locally, within a Docker container. The standard 
+assets are built and packaged locally, within a Docker container. The standard 
 [AWS packaging requirements](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html) 
 are used to create the asset:
 ```python
@@ -77,7 +77,7 @@ class BuildLambdaLayerStack(Stack):
         )
 ```
 If you have some custom code, package it into a module (see `cdk_lambda_layer_builder/test/lib/lib1`
-as an example) and use `BuildPyLayerAsset.from_modules` to build the Lambda layer assets:
+as an example) and use `BuildPyLayerAsset.from_modules` to build the Lambda Layer assets:
 ```python
 
 
@@ -115,7 +115,7 @@ class BuildLambdaLayerStack(Stack):
             retry_attempts=0,
         )
 ```
-You can find an example of a full stack creating a lambda function with a pypi layer 
+You can find an example of a full stack creating a Lambda function with a PyPI layer 
 and a custom module layer in `cdk_lambda_layer_builder/test/app.py`.
 
 ## Test
