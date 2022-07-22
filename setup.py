@@ -3,6 +3,7 @@ import setuptools
 requirements = [
     'aws-cdk-lib',
     'boto3',
+    'importlib_metadata',
     'pytest',
 ]
 

@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 import zipfile
 import os
 import shutil
+from importlib.metadata import version
 
 
 class PyLayerVersion(aws_lambda.LayerVersion):
@@ -85,6 +86,7 @@ class BuildPyLayerAsset(Construct):
             ['-t',f'/asset-output/python/lib/python{self.get_pyversion()}/site-packages/','--force-reinstall']
         )
         command  = [' '.join(command)]
+        command = self._workaround_docker_cmd_bug_in_aws_cdk_lib(command)
         self.s3_asset = aws_s3_assets.Asset(self, 's3asset', 
             path=asset_dir,
             bundling=BundlingOptions(
@@ -233,6 +235,33 @@ class BuildPyLayerAsset(Construct):
                  f'{self.py_runtime.to_string()} passed')
             )
         return pyver_name
+
+    def _workaround_docker_cmd_bug_in_aws_cdk_lib(self, docker_command: List[str]) -> List[str]:
+        '''
+        the module aws-cdk-lib breaks the backward compatibility between minor versions 
+        2.31.2 and 2.32.0 (onward). These are minor version upgrade, so the backward 
+        compatibility should NOT break. This function fixes that.
+
+        In version 2.31.2, the Docker command passed to a BundlingOptions must have 
+        the form ['pip', 'install', '-e', 'whatever']. But in version 2.32.0, the 
+        docker command must have the form ['pip install -e whatever'].
+
+        Arguments
+        ---------
+        docker_command: List[str]
+            docker command in 2.32.0 version and onward
+
+        Returns
+        -------
+        docker_command_fix: List[str]
+            docker command fixed according the aws-cdk-lib version installed
+        '''
+        cdk_ver = version('aws-cdk-lib')
+        cdk_ver = [int(v) for v in cdk_ver.split('.')]
+        if cdk_ver[1]>=32:
+            return docker_command
+        else:
+            return docker_command[0].split(' ')
 
 
     @staticmethod
