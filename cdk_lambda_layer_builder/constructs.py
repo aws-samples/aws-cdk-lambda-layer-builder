@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 import zipfile
 import os
 import shutil
-from importlib.metadata import version
+from importlib_metadata import version
 
 
 class PyLayerVersion(aws_lambda.LayerVersion):
