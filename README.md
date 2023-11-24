@@ -13,7 +13,7 @@ or can be custom modules.
 
 ## Requirements
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) >= v2: installed and configured
-* [Python](https://www.python.org/) >= 3.6
+* [Python](https://www.python.org/) >= 3.8
 * [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html#cpm) >= 2.X
 * [Docker](https://docs.docker.com/get-docker/)
 
@@ -54,21 +54,21 @@ class BuildLambdaLayerStack(Stack):
         # create the pipy layer
         pypi_layer_asset = BuildPyLayerAsset.from_pypi(self, 'PyPiLayerAsset',
             pypi_requirements=['numpy', 'requests'],
-            py_runtime=aws_lambda.Runtime.PYTHON_3_8,
+            py_runtime=aws_lambda.Runtime.PYTHON_3_10,
             asset_bucket=asset_bucket
         )
         pypi_layer = aws_lambda.LayerVersion(
             self,
             id='PyPiLayer',
             code=aws_lambda.Code.from_bucket(pypi_layer_asset.asset_bucket, pypi_layer_asset.asset_key),
-            compatible_runtimes=[aws_lambda.Runtime.PYTHON_3_8],
+            compatible_runtimes=[aws_lambda.Runtime.PYTHON_3_10],
             description ='PyPi python modules'
         )
 
         test_function = aws_lambda.Function(
             self,
             id='test',
-            runtime=aws_lambda.Runtime.PYTHON_3_8,
+            runtime=aws_lambda.Runtime.PYTHON_3_10,
             handler='main.lambda_handler',
             code=aws_lambda.Code.from_asset('lambda_code'),
             timeout=Duration.seconds(60),
@@ -94,20 +94,20 @@ class BuildLambdaLayerStack(Stack):
         # create a Lambda layer with two custom python modules
         module_layer_asset = BuildPyLayerAsset.from_modules(self, 'ModuleLayerAsset',
             local_module_dirs=['lib/lib1','lib/lib2'],
-            py_runtime=aws_lambda.Runtime.PYTHON_3_8,
+            py_runtime=aws_lambda.Runtime.PYTHON_3_10,
         )
         module_layer = aws_lambda.LayerVersion(
             self,
             id='ModuleLayer',
             code=aws_lambda.Code.from_bucket(module_layer_asset.asset_bucket, module_layer_asset.asset_key),
-            compatible_runtimes=[aws_lambda.Runtime.PYTHON_3_8],
+            compatible_runtimes=[aws_lambda.Runtime.PYTHON_3_10],
             description ='custom python modules lib1, lib2'
         )
 
         test_function = aws_lambda.Function(
             self,
             id='test',
-            runtime=aws_lambda.Runtime.PYTHON_3_8,
+            runtime=aws_lambda.Runtime.PYTHON_3_10,
             handler='main.lambda_handler',
             code=aws_lambda.Code.from_asset('lambda_code'),
             timeout=Duration.seconds(60),
